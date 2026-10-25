@@ -30,4 +30,17 @@ jobs:
         run: go build -o /tmp/go-web-app .
 
       - name: Build Docker image
-        run: docker build -t go-web-app:ci .
+        run: docker build -t vasrivastava/go-web-app:${{ github.sha }} -t vasrivastava/go-web-app:latest .
+
+      - name: Log in to Docker Hub
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          docker push vasrivastava/go-web-app:${{ github.sha }}
+          docker push vasrivastava/go-web-app:latest
