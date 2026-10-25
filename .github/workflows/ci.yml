@@ -27,4 +27,7 @@ jobs:
         run: go test ./...
 
       - name: Build application
-        run: go build -o go-web-app .
+        run: go build -o /tmp/go-web-app .
+
+      - name: Build Docker image
+        run: docker build -t go-web-app:ci .
